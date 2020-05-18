@@ -3,7 +3,7 @@ from tkinter.colorchooser import askcolor
 from PIL import ImageTk, Image
 import cv2
 
-class Paint(object):
+class Image Manipulator(object):
 
     DEFAULT_PEN_SIZE = 5.0
     DEFAULT_COLOR = 'black'
@@ -160,4 +160,4 @@ class Paint(object):
 
 
 if __name__ == '__main__':
-    Paint()
+    ImageManipulator()
