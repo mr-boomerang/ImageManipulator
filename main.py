@@ -436,6 +436,11 @@ class ImageManipulator(object):
             messagebox.showerror("Error", "No Previous State Found")
 
     def save(self):
+        f = open("preprocessing.txt", "a")
+        f.truncate(0)
+        f.write(self.filename + "\n")
+        f.write(self.historyPanel.get("1.0", END))
+        f.close()
         cv2.imwrite('final.jpg', self.img)
 
     def printHistory(self):
