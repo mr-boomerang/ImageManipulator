@@ -115,18 +115,38 @@ class ImageManipulator(object):
                                       command=self.black_hat)
         self.BlackHat_button.grid(row=5, column=4)
 
+        self.SobelX_button = Button(self.root,
+                                    text='Sobel X',
+                                    command=self.sobel_x)
+        self.SobelX_button.grid(row=6, column=0)
+
+        self.SobelY_button = Button(self.root,
+                                    text='Sobel Y',
+                                    command=self.sobel_y)
+        self.SobelY_button.grid(row=6, column=1)
+
+        self.SobelXY_button = Button(self.root,
+                                     text='Sobel XY',
+                                     command=self.sobel_xy)
+        self.SobelXY_button.grid(row=6, column=2)
+
+        self.Laplacian_button = Button(self.root,
+                                       text='Laplacian',
+                                       command=self.laplacian)
+        self.Laplacian_button.grid(row=6, column=3)
+
         self.Grayscale_button = Button(self.root,
                                        text='GrayScale',
                                        command=self.grayscale)
-        self.Grayscale_button.grid(row=6, columnspan=4)
+        self.Grayscale_button.grid(row=7, columnspan=4)
 
         self.Reset_button = Button(self.root, text='Reset', command=self.reset)
-        self.Reset_button.grid(row=7, columnspan=2)
+        self.Reset_button.grid(row=8, columnspan=2)
 
         self.Previous_button = Button(self.root,
                                       text='Prev',
                                       command=self.previous)
-        self.Previous_button.grid(row=7, columnspan=2, column=2)
+        self.Previous_button.grid(row=8, columnspan=2, column=2)
 
         self.c = Canvas(self.root, bg='white', width=500, height=500)
         self.c.grid(row=2, columnspan=5)
@@ -143,7 +163,7 @@ class ImageManipulator(object):
         self.historyPanel.grid(row=0, rowspan=5, column=6)
 
         self.Save_button = Button(self.root, text='Save', command=self.save)
-        self.Save_button.grid(row=7, column=6)
+        self.Save_button.grid(row=8, column=6)
 
         self.setup()
         self.root.mainloop()
@@ -164,17 +184,17 @@ class ImageManipulator(object):
             title="Select and Image",
             filetypes=(("png files", "*.png"), ("jpg files", "*.jpg"),
                        ("jpeg files", "*.jpeg")))
-        if (filename == ''): return
+        if (self.filename == ''): return
         self.img = cv2.cvtColor(cv2.imread(self.filename), cv2.COLOR_BGR2RGB)
         scale_percent = 60  # percent of original size
         self.img = cv2.resize(self.img, (500, 500),
                               interpolation=cv2.INTER_AREA)
-        self.history = [self.img]
-        self.step = ["Original Image"]
 
         self.origimg = self.img
         self.photo = ImageTk.PhotoImage(image=Image.fromarray(self.img))
         self.c.create_image(0, 0, image=self.photo, anchor=NW)
+
+        self.reset()
 
         self.Destination_Box.configure(state="normal")
         self.Destination_Box.insert('end', self.filename)
@@ -344,6 +364,50 @@ class ImageManipulator(object):
         self.steps.append('Black Hat')
         self.printHistory()
 
+    def sobel_x(self):
+        if ('Grayscale' not in self.steps):
+            messagebox.showerror("Error", "It only Works on Grayscale Images")
+            return
+        self.img = cv2.Sobel(self.img, cv2.CV_64F, 1, 0, ksize=5)
+        self.photo = ImageTk.PhotoImage(image=Image.fromarray(self.img))
+        self.c.create_image(0, 0, image=self.photo, anchor=NW)
+        self.history.append(self.img)
+        self.steps.append('Sobel X')
+        self.printHistory()
+
+    def sobel_y(self):
+        if ('Grayscale' not in self.steps):
+            messagebox.showerror("Error", "It only Works on Grayscale Images")
+            return
+        self.img = cv2.Sobel(self.img, cv2.CV_64F, 0, 1, ksize=5)
+        self.photo = ImageTk.PhotoImage(image=Image.fromarray(self.img))
+        self.c.create_image(0, 0, image=self.photo, anchor=NW)
+        self.history.append(self.img)
+        self.steps.append('Sobel Y')
+        self.printHistory()
+
+    def sobel_xy(self):
+        if ('Grayscale' not in self.steps):
+            messagebox.showerror("Error", "It only Works on Grayscale Images")
+            return
+        self.img = cv2.Sobel(self.img, cv2.CV_64F, 1, 1, ksize=5)
+        self.photo = ImageTk.PhotoImage(image=Image.fromarray(self.img))
+        self.c.create_image(0, 0, image=self.photo, anchor=NW)
+        self.history.append(self.img)
+        self.steps.append('Sobel XY')
+        self.printHistory()
+
+    def laplacian(self):
+        if ('Grayscale' not in self.steps):
+            messagebox.showerror("Error", "It only Works on Grayscale Images")
+            return
+        self.img = cv2.Laplacian(self.img, cv2.CV_64F)
+        self.photo = ImageTk.PhotoImage(image=Image.fromarray(self.img))
+        self.c.create_image(0, 0, image=self.photo, anchor=NW)
+        self.history.append(self.img)
+        self.steps.append('Laplacian')
+        self.printHistory()
+
     def grayscale(self):
         self.img = cv2.cvtColor(self.img, cv2.COLOR_RGB2GRAY)
         self.photo = ImageTk.PhotoImage(image=Image.fromarray(self.img))
@@ -356,7 +420,7 @@ class ImageManipulator(object):
         self.img = self.origimg
         self.photo = ImageTk.PhotoImage(image=Image.fromarray(self.img))
         self.c.create_image(0, 0, image=self.photo, anchor=NW)
-        self.history = []
+        self.history = [self.img]
         self.steps = ["Original Image"]
         self.printHistory()
 
