@@ -442,6 +442,7 @@ class ImageManipulator(object):
         f.write(self.historyPanel.get("1.0", END))
         f.close()
         cv2.imwrite('final.jpg', self.img)
+        messagebox.showinfo("Done", "preprocessor.txt file created")
 
     def printHistory(self):
         self.historyPanel.configure(state='normal')
