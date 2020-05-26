@@ -1,0 +1,8 @@
+REQUIREMENTS
+
+Python 
+Libraries
+Tkinter	--- already comes installed with python
+PIL / Pillow    --- pip install Pillow
+OpenCV	--- pip install opencv-python
+Numpy	--- pip install numpy
